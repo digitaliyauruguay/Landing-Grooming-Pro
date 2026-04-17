@@ -1,13 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { useDarkMode } from '../../hooks/useDarkMode.js';
+import { config } from '../../config/activePreset.js';
 import { 
-  PawPrint, Heart, Stethoscope, ShieldCheck, Activity, 
+  PawPrint, Heart, Stethoscope, ShieldCheck, Activity, Scissors, Palette, Sparkles, Wind, Sparkle,
   UserCheck, Settings, LogOut, Home, Star, Phone, Mail, MapPin,
   Clock, Calendar, CheckCircle, AlertCircle, Zap, TrendingUp,
   Users, Award, Target, ChevronDown, Menu, X, MessageCircle,
   Moon, Sun, Hand
 } from 'lucide-react';
+
+// Mapa de iconos del preset a componentes Lucide
+const iconMap = {
+  Scissors, Palette, Sparkles, Wind, Sparkle, Hand,
+  Stethoscope, ShieldCheck, Activity, Heart, PawPrint,
+  UserCheck, Star, Phone, Mail, MapPin, Clock, Calendar,
+  CheckCircle, AlertCircle, Zap, TrendingUp, Users, Award, Target
+};
 
 // Importar sistema de autenticación
 import { login, logout, isAuthenticated, getCurrentUser } from '../../lib/auth.js';
@@ -177,7 +186,7 @@ export default function ProductionReadyVetGrooming() {
     if (!formData.name.trim()) errors.name = 'El nombre es requerido';
     if (!formData.email.trim()) errors.email = 'El email es requerido';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = 'Email inválido';
-    if (!formData.petName.trim()) errors.petName = 'El nombre de la mascota es requerido';
+    if (!formData.petName.trim()) errors.petName = config.industry === 'peluqueria' ? 'El servicio de interés es requerido' : 'El nombre de la mascota es requerido';
     if (!formData.service) errors.service = 'Selecciona un servicio';
     if (!formData.message.trim()) errors.message = 'El mensaje es requerido';
     
@@ -211,121 +220,27 @@ export default function ProductionReadyVetGrooming() {
     }
   };
 
-  // Servicios mejorados
-  const services = [
-    {
-      name: "Consultas Médicas",
-      description: "Diagnóstico y tratamiento completo para la salud de tu mascota con tecnología avanzada",
-      icon: Stethoscope,
-      features: ["Diagnóstico preciso", "Tratamiento personalizado", "Seguimiento continuo", "Telemedicina"],
-      color: "from-blue-600 to-cyan-600",
-      stats: { patients: "2000+", satisfaction: "98%" }
-    },
-    {
-      name: "Vacunación",
-      description: "Plan completo de vacunación con certificados oficiales y recordatorios automáticos",
-      icon: ShieldCheck,
-      features: ["Antirrábica", "Quíntuple", "Sextuple", "Certificados digitales", "Recordatorios"],
-      color: "from-green-600 to-emerald-600",
-      stats: { vaccines: "5000+", protection: "99%" }
-    },
-    {
-      name: "Cirugías",
-      description: "Quirófano equipado con tecnología de punta para cirugías menores y mayores",
-      icon: Activity,
-      features: ["Castraciones", "Ortopedia", "Soft tissue", "Oftalmología", "UCI post-operatoria"],
-      color: "from-purple-600 to-violet-600",
-      stats: { surgeries: "800+", success: "99.5%" }
-    },
-    {
-      name: "Laboratorio",
-      description: "Análisis clínicos completos con resultados rápidos y precisos",
-      icon: Stethoscope,
-      features: ["Hemogramas", "Bioquímica", "Orina", "Materia fecal", "Histopatología"],
-      color: "from-orange-600 to-red-600",
-      stats: { tests: "10000+", accuracy: "99.9%" }
-    },
-    {
-      name: "Emergencias 24/7",
-      description: "Atención de urgencias las 24 horas con equipo especializado",
-      icon: ShieldCheck,
-      features: ["Guardia activa", "Internación", "UCI", "Transporte", "Seguimiento"],
-      color: "from-red-600 to-pink-600",
-      stats: { emergencies: "1500+", response: "<15min" }
-    },
-    {
-      name: "Peluquería & Spa",
-      description: "Servicio premium de estética y bienestar con productos orgánicos",
-      icon: Heart,
-      features: ["Baño terapéutico", "Corte profesional", "Spa day", "Aromaterapia", "Fotografía"],
-      color: "from-pink-600 to-rose-600",
-      stats: { treatments: "3000+", rating: "4.9/5" }
-    }
-  ];
+  // Servicios desde config
+  const services = config.services.map((s, i) => ({
+    name: s.title,
+    description: s.description,
+    icon: iconMap[s.icon] || Star,
+    features: s.features,
+    color: ["from-blue-600 to-cyan-600", "from-green-600 to-emerald-600", "from-purple-600 to-violet-600", "from-orange-600 to-red-600", "from-red-600 to-pink-600", "from-pink-600 to-rose-600"][i % 6],
+    stats: {}
+  }));
 
-  // Testimonios mejorados
-  const testimonials = [
-    {
-      name: "María González",
-      role: "Dueña de Max (Golden Retriever)",
-      content: "El equipo veterinario salvó a mi perro de una emergencia grave. Su profesionalismo y dedicación son excepcionales. Max hoy está sano y feliz gracias a ellos.",
-      rating: 5,
-      avatar: "MG",
-      date: "Hace 2 semanas",
-      verified: true,
-      images: ["golden", "happy"]
-    },
-    {
-      name: "Carlos Rodríguez",
-      role: "Dueño de Luna y Sol (Gatos)",
-      content: "Atención de primera nivel. Mis gatos reciben el mejor cuidado, desde vacunas hasta chequeos regulares. El trato humano y profesional es inmejorable.",
-      rating: 5,
-      avatar: "CR",
-      date: "Hace 1 mes",
-      verified: true,
-      images: ["cats", "twins"]
-    },
-    {
-      name: "Ana Martínez",
-      role: "Dueña de Rocky (Bulldog)",
-      content: "Confío plenamente en ellos para el cuidado de Rocky. La cirugía de cataratas fue un éxito y el seguimiento post-operatorio fue impecable. Totalmente recomendados.",
-      rating: 5,
-      avatar: "AM",
-      date: "Hace 3 semanas",
-      verified: true,
-      images: ["bulldog", "surgery"]
-    },
-    {
-      name: "Diego Silva",
-      role: "Dueño de Bella (Poodle)",
-      content: "El servicio de peluquería y spa es espectacular. Bella nunca se vio tan hermosa y relajada. Los productos orgánicos hacen la diferencia.",
-      rating: 5,
-      avatar: "DS",
-      date: "Hace 1 semana",
-      verified: true,
-      images: ["poodle", "spa"]
-    },
-    {
-      name: "Lucía Pérez",
-      role: "Dueña de Thor (Husky)",
-      content: "La atención de emergencia 24/7 nos salvó en una situación crítica. Rápida respuesta, diagnóstico preciso y tratamiento efectivo. Gracias por cuidar a Thor.",
-      rating: 5,
-      avatar: "LP",
-      date: "Hace 4 días",
-      verified: true,
-      images: ["husky", "emergency"]
-    },
-    {
-      name: "Roberto Chen",
-      role: "Dueño de Mochi (Gato persa)",
-      content: "Excelente servicio de laboratorio con resultados rápidos. El diagnóstico temprano de Mochi hizo posible un tratamiento efectivo. Muy profesionales.",
-      rating: 5,
-      avatar: "RC",
-      date: "Hace 2 meses",
-      verified: true,
-      images: ["persian", "lab"]
-    }
-  ];
+  // Testimonios desde config
+  const testimonials = config.testimonials.map((t, i) => ({
+    name: t.name,
+    role: t.role,
+    content: t.content,
+    rating: t.rating,
+    avatar: t.avatar,
+    date: ["Hace 2 semanas", "Hace 1 mes", "Hace 3 semanas"][i % 3],
+    verified: true,
+    images: []
+  }));
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
@@ -362,7 +277,7 @@ export default function ProductionReadyVetGrooming() {
                 whileHover={{ scale: 1.05 }}
                 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
               >
-                VetCare Pro
+                {config.businessName}
               </motion.span>
             </div>
 
@@ -622,7 +537,7 @@ export default function ProductionReadyVetGrooming() {
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 <PawPrint className="w-4 h-4" />
-                <span>Salud Animal Premium</span>
+                <span>{config.industry === 'peluqueria' ? 'Belleza Profesional' : 'Salud Animal Premium'}</span>
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               </div>
             </motion.div>
@@ -635,7 +550,7 @@ export default function ProductionReadyVetGrooming() {
                 Cuidado Profesional
               </span>
               <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-                para tu Mascota
+                para {config.industry === 'peluqueria' ? 'tu Look' : 'tu Mascota'}
               </span>
             </h1>
 
@@ -666,7 +581,7 @@ export default function ProductionReadyVetGrooming() {
                 </div>
                 <p className={`mt-2 font-medium transition-colors duration-300 ${
                   darkMode ? 'text-gray-300' : 'text-gray-600'
-                }`}>Mascotas Atendidas</p>
+                }`}>{config.about.stats[2]?.label || 'Clientes Felices'}</p>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -674,7 +589,7 @@ export default function ProductionReadyVetGrooming() {
                 </div>
                 <p className={`mt-2 font-medium transition-colors duration-300 ${
                   darkMode ? 'text-gray-300' : 'text-gray-600'
-                }`}>Años de Experiencia</p>
+                }`}>{config.about.stats[0]?.label || 'Años de Experiencia'}</p>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -682,7 +597,7 @@ export default function ProductionReadyVetGrooming() {
                 </div>
                 <p className={`mt-2 font-medium transition-colors duration-300 ${
                   darkMode ? 'text-gray-300' : 'text-gray-600'
-                }`}>Satisfacción</p>
+                }`}>{config.about.stats[3]?.label || 'Satisfacción'}</p>
               </div>
             </motion.div>
 
@@ -701,7 +616,7 @@ export default function ProductionReadyVetGrooming() {
               >
                 <span className="flex items-center gap-3">
                   <Heart className="w-5 h-5" />
-                  Agendar Cita Ahora
+                  {config.hero.ctaText} Ahora
                   <Hand className="w-5 h-5" />
                 </span>
               </motion.button>
@@ -770,7 +685,7 @@ export default function ProductionReadyVetGrooming() {
               }`}
             >
               <Star className="w-4 h-4 mr-2" />
-              Nuestros Servicios Premium
+              {config.industry === 'peluqueria' ? 'Nuestros Servicios de Belleza' : 'Nuestros Servicios Premium'}
             </motion.div>
             
             <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-6 transition-colors duration-300 ${
@@ -779,13 +694,12 @@ export default function ProductionReadyVetGrooming() {
               <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 Atención Integral
               </span>
-              {" "}para tu Mejor Amigo
+              {" "}para {config.industry === 'peluqueria' ? 'tu Mejor Versión' : 'tu Mejor Amigo'}
             </h2>
             <p className={`text-xl max-w-3xl mx-auto leading-relaxed transition-colors duration-300 ${
               darkMode ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              Ofrecemos servicios veterinarios completos con tecnología de última generación, 
-              personal altamente calificado y un enfoque centrado en el bienestar animal
+              {config.industry === 'peluqueria' ? 'Ofrecemos servicios de belleza profesionales con las últimas tendencias, productos premium y un enfoque centrado en tu estilo' : 'Ofrecemos servicios veterinarios completos con tecnología de última generación, personal altamente calificado y un enfoque centrado en el bienestar animal'}
             </p>
           </motion.div>
 
@@ -881,7 +795,7 @@ export default function ProductionReadyVetGrooming() {
               }`}
             >
               <Heart className="w-4 h-4 mr-2" />
-              Historias de Éxito
+              {config.industry === 'peluqueria' ? 'Historias de Belleza' : 'Historias de Éxito'}
             </motion.div>
             
             <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-6 transition-colors duration-300 ${
@@ -895,7 +809,7 @@ export default function ProductionReadyVetGrooming() {
             <p className={`text-xl max-w-3xl mx-auto leading-relaxed transition-colors duration-300 ${
               darkMode ? 'text-gray-300' : 'text-gray-600'
             }`}>
-              Descubre las experiencias de dueños de mascotas que confían en nosotros para el cuidado de sus seres queridos
+              {config.industry === 'peluqueria' ? 'Descubrí las experiencias de clientas que confían en nosotros para su estilo y belleza' : 'Descubre las experiencias de dueños de mascotas que confían en nosotros para el cuidado de sus seres queridos'}
             </p>
           </motion.div>
 
@@ -1017,7 +931,7 @@ export default function ProductionReadyVetGrooming() {
             }`}>
               Comienza el Cuidado
               <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                {" "}de tu Mascota Hoy
+                {" "}de {config.industry === 'peluqueria' ? 'tu Belleza' : 'tu Mascota'} Hoy
               </span>
             </h2>
             <p className={`text-xl max-w-3xl mx-auto leading-relaxed transition-colors duration-300 ${
@@ -1058,9 +972,9 @@ export default function ProductionReadyVetGrooming() {
                 </p>
                 <div className="flex items-center justify-center gap-4 text-white/60">
                   <Phone className="w-5 h-5" />
-                  <span>+54 9 11 2345-6789</span>
+                  <span>{config.contact.phoneDisplay}</span>
                   <Mail className="w-5 h-5 ml-4" />
-                  <span>contacto@vetcarepro.com</span>
+                  <span>{config.contact.email}</span>
                 </div>
               </motion.div>
             ) : (
@@ -1152,8 +1066,8 @@ export default function ProductionReadyVetGrooming() {
                     <label className={`block text-sm font-semibold mb-3 flex items-center gap-2 transition-colors duration-300 ${
                       darkMode ? 'text-white' : 'text-gray-700'
                     }`}>
-                      <Heart className="w-4 h-4" />
-                      Nombre de tu mascota
+                      <Star className="w-4 h-4" />
+                      {config.industry === 'peluqueria' ? 'Servicio de interés' : 'Nombre de tu mascota'}
                     </label>
                     <input
                       type="text"
@@ -1165,7 +1079,7 @@ export default function ProductionReadyVetGrooming() {
                           ? 'bg-white/20 text-white placeholder-white/60 border-white/30 focus:border-white/60 focus:bg-white/25'
                           : 'bg-white text-gray-900 placeholder-gray-500 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
                       }${formErrors.petName ? ' border-red-400 focus:border-red-400' : ''}`}
-                      placeholder="Nombre de tu mascota"
+                      placeholder={config.industry === 'peluqueria' ? 'Ej: Coloración, Corte, etc.' : 'Nombre de tu mascota'}
                     />
                     {formErrors.petName && (
                       <motion.p
@@ -1233,7 +1147,7 @@ export default function ProductionReadyVetGrooming() {
                         ? 'bg-white/20 text-white placeholder-white/60 border-white/30 focus:border-white/60 focus:bg-white/25'
                         : 'bg-white text-gray-900 placeholder-gray-500 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
                     }${formErrors.message ? ' border-red-400 focus:border-red-400' : ''}`}
-                    placeholder="Cuéntanos sobre tu mascota y lo que necesitas..."
+                    placeholder={config.industry === 'peluqueria' ? 'Cuéntanos sobre el servicio que te interesa...' : 'Cuéntanos sobre tu mascota y lo que necesitas...'}
                   />
                   {formErrors.message && (
                     <motion.p
@@ -1271,7 +1185,7 @@ export default function ProductionReadyVetGrooming() {
                     ) : (
                       <>
                         <Heart className="w-5 h-5" />
-                        Agendar Cita
+                        {config.hero.ctaText}
                         <Hand className="w-5 h-5" />
                       </>
                     )}
@@ -1292,20 +1206,19 @@ export default function ProductionReadyVetGrooming() {
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center">
                   <PawPrint className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">VetCare Pro</span>
+                <span className="text-xl font-bold">{config.businessName}</span>
               </div>
               <p className="text-gray-400 leading-relaxed">
-                Cuidado profesional para la salud y bienestar de tu mascota con tecnología avanzada y amor por los animales.
+                {config.about.description}
               </p>
             </div>
             
             <div>
               <h3 className="font-bold mb-4">Servicios</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#servicios" className="hover:text-white transition-colors">Consultas Médicas</a></li>
-                <li><a href="#servicios" className="hover:text-white transition-colors">Vacunación</a></li>
-                <li><a href="#servicios" className="hover:text-white transition-colors">Cirugías</a></li>
-                <li><a href="#servicios" className="hover:text-white transition-colors">Emergencias 24/7</a></li>
+                {config.services.slice(0, 4).map((s) => (
+                  <li key={s.id}><a href="#servicios" className="hover:text-white transition-colors">{s.title}</a></li>
+                ))}
               </ul>
             </div>
             
@@ -1314,15 +1227,15 @@ export default function ProductionReadyVetGrooming() {
               <ul className="space-y-2 text-gray-400">
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  +54 9 11 2345-6789
+                  {config.contact.phoneDisplay}
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  contacto@vetcarepro.com
+                  {config.contact.email}
                 </li>
                 <li className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  Av. Libertador 1234, CABA
+                  {config.contact.address}
                 </li>
               </ul>
             </div>
@@ -1330,15 +1243,15 @@ export default function ProductionReadyVetGrooming() {
             <div>
               <h3 className="font-bold mb-4">Horarios</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>Lun a Vie: 9:00 - 20:00</li>
-                <li>Sáb: 9:00 - 14:00</li>
-                <li className="text-green-400 font-semibold">Emergencias: 24/7</li>
+                <li>{config.schedule.weekdays}</li>
+                <li>{config.schedule.weekend}</li>
+                <li className="text-green-400 font-semibold">{config.schedule.emergency}</li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 VetCare Pro. Todos los derechos reservados.</p>
+            <p>&copy; 2024 {config.businessName}. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
@@ -1373,7 +1286,7 @@ export default function ProductionReadyVetGrooming() {
         className="fixed bottom-8 right-8 z-40 flex flex-col gap-4"
       >
         <motion.a
-          href={`https://wa.me/5491123456789?text=Hola! Quiero consultar sobre los servicios de VetCare Pro`}
+          href={`https://wa.me/${config.contact.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(config.contact.whatsappMessage)}`}
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.1, rotate: 15 }}
