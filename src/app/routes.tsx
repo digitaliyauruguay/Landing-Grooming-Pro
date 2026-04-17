@@ -7,6 +7,7 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
+import Landing from './pages/Landing';
 import ProductionReadyVetGrooming from './components/ProductionReadyVetGrooming.jsx';
 import { isAuthenticated } from '../lib/auth';
 

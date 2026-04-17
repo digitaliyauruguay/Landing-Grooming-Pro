@@ -66,7 +66,7 @@ const BackgroundParticles = ({ density = 30 }) => {
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 backdrop-blur-sm"
+          className="absolute rounded-full bg-gradient-to-r from-cyan-400/20 to-green-400/20 backdrop-blur-sm"
           style={{
             width: particle.size,
             height: particle.size,
@@ -149,6 +149,16 @@ export default function ProductionReadyVetGrooming() {
   const currentUser = getCurrentUser();
   const { scale, opacity } = useScrollEffects();
 
+  // Debug: check if config is loaded
+  console.log('Config theme:', config?.theme);
+  
+  // Fallback theme values
+  const theme = config?.theme || {
+    primary: '#0f766e',
+    secondary: '#1e40af',
+    light: '#f0fdfa'
+  };
+
   // Scroll tracking optimizado con debounce
   useEffect(() => {
     let timeoutId = null;
@@ -226,7 +236,7 @@ export default function ProductionReadyVetGrooming() {
     description: s.description,
     icon: iconMap[s.icon] || Star,
     features: s.features,
-    color: ["from-blue-600 to-cyan-600", "from-green-600 to-emerald-600", "from-purple-600 to-violet-600", "from-orange-600 to-red-600", "from-red-600 to-pink-600", "from-pink-600 to-rose-600"][i % 6],
+    color: ["from-blue-600 to-cyan-600", "from-green-600 to-emerald-600", "from-gray-600 to-black", "from-orange-600 to-red-600", "from-red-600 to-pink-600", "from-pink-600 to-rose-600"][i % 6],
     stats: {}
   }));
 
@@ -243,11 +253,11 @@ export default function ProductionReadyVetGrooming() {
   }));
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      darkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-purple-900' 
-        : 'bg-gradient-to-br from-gray-50 via-white to-purple-50'
-    }`}>
+    <div className="min-h-screen transition-colors duration-300" style={{ 
+      background: darkMode
+        ? `linear-gradient(135deg, ${theme.primary} 0%, ${theme.secondary} 100%)`
+        : `linear-gradient(135deg, ${theme.primary} 0%, ${theme.light} 60%, ${theme.secondary} 100%)`
+    }}>
       {/* Navigation */}
       <motion.header
         style={{ scale, opacity }}
@@ -255,8 +265,8 @@ export default function ProductionReadyVetGrooming() {
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b shadow-sm transition-colors duration-300 ${
           darkMode 
-            ? 'bg-gray-900/90 border-purple-800' 
-            : 'bg-white/90 border-purple-100'
+            ? 'bg-gray-900/90 border-gray-700' 
+            : 'bg-white/90 border-gray-200'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -269,13 +279,15 @@ export default function ProductionReadyVetGrooming() {
               <motion.div
                 whileHover={{ rotate: 360, scale: 1.05 }}
                 transition={{ duration: 0.6, ease: 'easeInOut' }}
-                className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-purple-500/25 transition-all"
+                className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-all"
+                style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
               >
-                <PawPrint className="w-6 h-6 text-white" />
+                <Scissors className="w-6 h-6 text-white" />
               </motion.div>
               <motion.span 
                 whileHover={{ scale: 1.05 }}
-                className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"
+                className="text-xl font-bold bg-clip-text text-transparent"
+                style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
               >
                 {config.businessName}
               </motion.span>
@@ -292,19 +304,15 @@ export default function ProductionReadyVetGrooming() {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' })}
-                  className={`text-sm font-semibold transition-all cursor-pointer relative ${
-                    currentSection === section 
-                      ? 'text-purple-600' 
-                      : darkMode
-                        ? 'text-gray-300 hover:text-purple-400'
-                        : 'text-gray-700 hover:text-purple-600'
-                  }`}
+                  className="text-sm font-semibold transition-all cursor-pointer relative text-white hover:text-green-400"
+                  style={{ color: currentSection === section ? theme.secondary : 'white' }}
                 >
                   {section.charAt(0).toUpperCase() + section.slice(1)}
                   {currentSection === section && (
                     <motion.div
                       layoutId="activeSection"
-                      className="absolute -bottom-2 left-0 right-0 h-0.5 bg-purple-600 rounded-full"
+                      className="absolute -bottom-2 left-0 right-0 h-0.5 rounded-full"
+                      style={{ backgroundColor: theme.secondary }}
                       initial={false}
                       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     />
@@ -319,7 +327,8 @@ export default function ProductionReadyVetGrooming() {
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-purple-500/25 cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-all shadow-lg cursor-pointer"
+                    style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
                   >
                     <UserCheck className="w-4 h-4" />
                     <span className="hidden sm:inline text-sm font-medium">{currentUser}</span>
@@ -335,7 +344,7 @@ export default function ProductionReadyVetGrooming() {
                         className={`absolute right-0 mt-2 w-56 rounded-xl shadow-2xl border py-2 z-50 transition-colors duration-300 ${
                           darkMode 
                             ? 'bg-gray-800 border-gray-700' 
-                            : 'bg-white border-purple-100'
+                            : 'bg-white border-gray-200'
                         }`}
                       >
                         <a
@@ -343,16 +352,16 @@ export default function ProductionReadyVetGrooming() {
                           className={`flex items-center gap-3 px-4 py-3 transition-colors cursor-pointer ${
                             darkMode 
                               ? 'text-gray-300 hover:bg-gray-700' 
-                              : 'text-gray-700 hover:bg-purple-50'
+                              : 'text-gray-700 hover:bg-gray-50'
                           }`}
                         >
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300 ${
                             darkMode 
-                              ? 'bg-purple-900' 
-                              : 'bg-purple-100'
+                              ? 'bg-green-900' 
+                              : 'bg-green-100'
                           }`}>
                             <Settings className={`w-4 h-4 transition-colors duration-300 ${
-                              darkMode ? 'text-purple-300' : 'text-purple-600'
+                              darkMode ? 'text-green-300' : 'text-green-600'
                             }`} />
                           </div>
                           <div>
@@ -369,7 +378,7 @@ export default function ProductionReadyVetGrooming() {
                           </div>
                         </a>
                         <div className={`border-t my-1 transition-colors duration-300 ${
-                          darkMode ? 'border-gray-700' : 'border-purple-100'
+                          darkMode ? 'border-gray-700' : 'border-gray-200'
                         }`} />
                         <button
                           onClick={() => {
@@ -411,7 +420,8 @@ export default function ProductionReadyVetGrooming() {
               ) : (
                 <a
                   href="/login"
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-purple-500/25 cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-all shadow-lg cursor-pointer"
+                  style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
                 >
                   <UserCheck className="w-4 h-4" />
                   <span className="hidden sm:inline text-sm font-medium">Admin</span>
@@ -423,10 +433,11 @@ export default function ProductionReadyVetGrooming() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
+                className="md:hidden w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: theme.light }}
               >
                 <motion.div animate={{ rotate: mobileMenuOpen ? 45 : 0 }}>
-                  {mobileMenuOpen ? <X className="w-5 h-5 text-purple-600" /> : <Menu className="w-5 h-5 text-purple-600" />}
+                  {mobileMenuOpen ? <X className="w-5 h-5" style={{ color: theme.primary }} /> : <Menu className="w-5 h-5" style={{ color: theme.primary }} />}
                 </motion.div>
               </motion.button>
             </div>
@@ -440,7 +451,7 @@ export default function ProductionReadyVetGrooming() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden bg-white border-t border-purple-100"
+              className="md:hidden bg-white border-t border-gray-200"
             >
               <div className="px-4 py-4 space-y-2">
                 {['inicio', 'servicios', 'testimonios', 'contacto'].map((section, index) => (
@@ -455,9 +466,13 @@ export default function ProductionReadyVetGrooming() {
                     }}
                     className={`block w-full text-left px-4 py-3 rounded-lg transition-colors font-medium cursor-pointer ${
                       currentSection === section 
-                        ? 'bg-purple-100 text-purple-600' 
-                        : 'text-gray-700 hover:bg-purple-50'
+                        ? 'hover:bg-[rgba(0,0,0,0.04)]' 
+                        : 'text-gray-700 hover:bg-[rgba(0,0,0,0.04)]'
                     }`}
+                    style={{
+                      backgroundColor: currentSection === section ? theme.secondary + '20' : 'transparent',
+                      color: currentSection === section ? theme.secondary : '#ffffff'
+                    }}
                   >
                     {section.charAt(0).toUpperCase() + section.slice(1)}
                   </motion.button>
@@ -465,10 +480,11 @@ export default function ProductionReadyVetGrooming() {
                 
                 {currentUser && (
                   <>
-                    <div className="border-t border-purple-100 pt-2 mt-2">
+                    <div className="border-t pt-2 mt-2" style={{ borderColor: theme.light }}>
                       <a
                         href="/dashboard"
-                        className="block w-full text-left px-4 py-3 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors font-medium"
+                        className="block w-full text-left px-4 py-3 rounded-lg transition-colors font-medium"
+                        style={{ color: theme.primary }}
                       >
                         Dashboard
                       </a>
@@ -492,11 +508,7 @@ export default function ProductionReadyVetGrooming() {
       </motion.header>
 
       {/* Hero Section */}
-      <section id="inicio" className={`relative min-h-screen overflow-hidden transition-colors duration-300 ${
-        darkMode
-          ? 'bg-gradient-to-br from-purple-900 via-gray-800 to-blue-900'
-          : 'bg-gradient-to-br from-purple-50 via-white to-blue-50'
-      }`}>
+      <section id="inicio" className="relative min-h-screen overflow-hidden transition-colors duration-300">
         {/* Background particles */}
         <BackgroundParticles density={25} />
         
@@ -528,11 +540,14 @@ export default function ProductionReadyVetGrooming() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className={`inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold mb-8 border transition-colors duration-300 ${
-                darkMode
-                  ? 'bg-gradient-to-r from-purple-800 to-blue-800 text-purple-300 border-purple-700'
-                  : 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border-purple-200'
-              }`}
+              className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold mb-8 border transition-colors duration-300"
+              style={{
+                backgroundImage: darkMode
+                  ? `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`
+                  : `linear-gradient(135deg, ${theme.light}, ${theme.secondary})`,
+                borderColor: darkMode ? theme.primary : 'rgba(195, 197, 203, 0.7)',
+                color: darkMode ? '#E0E7FF' : theme.primary
+              }}
             >
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -546,10 +561,16 @@ export default function ProductionReadyVetGrooming() {
             <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight transition-colors duration-300 ${
               darkMode ? 'text-white' : 'text-gray-900'
             }`}>
-              <span className="block bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span
+                className="block bg-clip-text text-transparent"
+                style={{ backgroundImage: `linear-gradient(135deg, ${theme.light}, ${theme.secondary})` }}
+              >
                 Cuidado Profesional
               </span>
-              <span className="block bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span
+                className="block bg-clip-text text-transparent"
+                style={{ backgroundImage: `linear-gradient(135deg, ${theme.light}, ${theme.secondary})` }}
+              >
                 para {config.industry === 'peluqueria' ? 'tu Look' : 'tu Mascota'}
               </span>
             </h1>
@@ -563,9 +584,9 @@ export default function ProductionReadyVetGrooming() {
                 darkMode ? 'text-gray-300' : 'text-gray-600'
               }`}
             >
-              Servicios veterinarios de excelencia con tecnología avanzada, 
-              <span className={`font-semibold ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}> 15 años de experiencia</span> 
-              {" "}y un equipo apasionado por el bienestar animal
+              {config.industry === 'peluqueria'
+                ? 'Servicios de belleza premium con las últimas tendencias, 15 años de experiencia y un equipo apasionado por tu estilo.'
+                : 'Servicios veterinarios de excelencia con tecnología avanzada, 15 años de experiencia y un equipo apasionado por el bienestar animal.'}
             </motion.p>
 
             {/* Estadísticas */}
@@ -576,7 +597,7 @@ export default function ProductionReadyVetGrooming() {
               className="grid grid-cols-3 gap-8 mb-12"
             >
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <div className="text-4xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}>
                   <AnimatedCounter target={5000} suffix="+" />
                 </div>
                 <p className={`mt-2 font-medium transition-colors duration-300 ${
@@ -584,7 +605,7 @@ export default function ProductionReadyVetGrooming() {
                 }`}>{config.about.stats[2]?.label || 'Clientes Felices'}</p>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <div className="text-4xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}>
                   <AnimatedCounter target={15} suffix="+" />
                 </div>
                 <p className={`mt-2 font-medium transition-colors duration-300 ${
@@ -592,7 +613,7 @@ export default function ProductionReadyVetGrooming() {
                 }`}>{config.about.stats[0]?.label || 'Años de Experiencia'}</p>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <div className="text-4xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}>
                   <AnimatedCounter target={98} suffix="%" />
                 </div>
                 <p className={`mt-2 font-medium transition-colors duration-300 ${
@@ -609,10 +630,11 @@ export default function ProductionReadyVetGrooming() {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <motion.button
-                whileHover={{ scale: 1.05, y: -3, boxShadow: "0 20px 40px rgba(147, 51, 234, 0.3)" }}
+                whileHover={{ scale: 1.05, y: -3, boxShadow: `0 20px 40px ${theme.primary}33` }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold rounded-full shadow-xl hover:shadow-purple-500/50 transition-all cursor-pointer"
+                className="px-8 py-4 text-white font-bold rounded-full shadow-xl transition-all cursor-pointer"
+                style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
               >
                 <span className="flex items-center gap-3">
                   <Heart className="w-5 h-5" />
@@ -627,9 +649,10 @@ export default function ProductionReadyVetGrooming() {
                 onClick={() => document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' })}
                 className={`px-8 py-4 font-bold rounded-full border-2 transition-all shadow-lg cursor-pointer ${
                   darkMode
-                    ? 'bg-gray-800 text-white border-gray-600 hover:border-purple-400 hover:bg-gray-700'
-                    : 'bg-white text-gray-900 border-gray-300 hover:border-purple-600'
+                    ? 'bg-gray-800 text-white border-gray-600 hover:bg-gray-700'
+                    : 'bg-white text-gray-900 border-gray-300'
                 }`}
+                style={{ borderColor: theme.primary }}
               >
                 <span className="flex items-center gap-3">
                   <Stethoscope className="w-5 h-5" />
@@ -652,9 +675,8 @@ export default function ProductionReadyVetGrooming() {
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' })}
-                className={`p-3 rounded-full transition-colors cursor-pointer ${
-                  darkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-700'
-                }`}
+                className="p-3 rounded-full transition-colors cursor-pointer"
+                style={{ color: darkMode ? theme.secondary : theme.primary }}
               >
                 <ChevronDown className="w-6 h-6" />
               </motion.button>
@@ -678,11 +700,14 @@ export default function ProductionReadyVetGrooming() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 transition-colors duration-300 ${
-                darkMode
-                  ? 'bg-purple-800 text-purple-300'
-                  : 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border border-purple-200'
-              }`}
+              className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 transition-colors duration-300"
+              style={{
+                backgroundImage: darkMode
+                  ? `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`
+                  : `linear-gradient(135deg, ${theme.light}, ${theme.secondary})`,
+                color: darkMode ? '#E0E7FF' : theme.primary,
+                border: darkMode ? '1px solid rgba(195, 197, 203, 0.3)' : '1px solid rgba(195, 197, 203, 0.7)'
+              }}
             >
               <Star className="w-4 h-4 mr-2" />
               {config.industry === 'peluqueria' ? 'Nuestros Servicios de Belleza' : 'Nuestros Servicios Premium'}
@@ -691,7 +716,7 @@ export default function ProductionReadyVetGrooming() {
             <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-6 transition-colors duration-300 ${
               darkMode ? 'text-white' : 'text-gray-900'
             }`}>
-              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}>
                 Atención Integral
               </span>
               {" "}para {config.industry === 'peluqueria' ? 'tu Mejor Versión' : 'tu Mejor Amigo'}
@@ -714,7 +739,7 @@ export default function ProductionReadyVetGrooming() {
                 whileHover={{ y: -10, scale: 1.02 }}
                 className={`group rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all border cursor-pointer ${
                   darkMode 
-                    ? 'bg-gray-800 border-gray-700 hover:border-purple-600' 
+                    ? 'bg-gray-800 border-gray-700 hover:border-green-600' 
                     : 'bg-white border-gray-100'
                 }`}
               >
@@ -724,15 +749,15 @@ export default function ProductionReadyVetGrooming() {
                     <service.icon className="w-8 h-8 text-white" />
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-purple-600">{service.stats.patients || service.stats.vaccines || service.stats.surgeries || service.stats.tests || service.stats.emergencies || service.stats.treatments}</div>
+                    <div className="text-2xl font-bold" style={{ color: theme.primary }}>{service.stats.patients || service.stats.vaccines || service.stats.surgeries || service.stats.tests || service.stats.emergencies || service.stats.treatments}</div>
                     <div className="text-sm text-gray-500">{service.stats.satisfaction || service.stats.protection || service.stats.success || service.stats.accuracy || service.stats.response || service.stats.rating}</div>
                   </div>
                 </div>
                 
                 {/* Contenido */}
-                <h3 className={`text-2xl font-bold mb-4 group-hover:text-purple-600 transition-colors ${
+                <h3 className={`text-2xl font-bold mb-4 transition-colors ${
                   darkMode ? 'text-white' : 'text-gray-900'
-                }`}>
+                }`} style={{ color: darkMode ? '#FFFFFF' : '#111827' }}>
                   {service.name}
                 </h3>
                 <p className={`mb-6 leading-relaxed ${
@@ -748,7 +773,8 @@ export default function ProductionReadyVetGrooming() {
                         whileInView={{ scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.1 + i * 0.05 }}
-                        className="w-2 h-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}
                       />
                       <span className={`text-sm font-medium ${
                         darkMode ? 'text-gray-300' : 'text-gray-700'
@@ -761,7 +787,8 @@ export default function ProductionReadyVetGrooming() {
                   whileHover={{ scale: 1.05, x: 5 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="flex items-center gap-2 text-purple-600 font-bold hover:text-purple-700 transition-colors"
+                  className="flex items-center gap-2 font-bold transition-colors"
+                  style={{ color: theme.primary }}
                 >
                   Agendar <Hand className="w-5 h-5" />
                 </motion.button>
@@ -772,11 +799,15 @@ export default function ProductionReadyVetGrooming() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonios" className={`py-24 transition-colors duration-300 ${
-        darkMode 
-          ? 'bg-gradient-to-b from-gray-900 via-purple-800 to-purple-900' 
-          : 'bg-gradient-to-b from-white via-purple-50 to-purple-100'
-      }`}>
+      <section
+        id="testimonios"
+        className="py-24 transition-colors duration-300"
+        style={{
+          backgroundImage: darkMode
+            ? `linear-gradient(180deg, #050816 0%, ${theme.primary}20 40%, ${theme.secondary}60 100%)`
+            : `linear-gradient(180deg, #ffffff 0%, ${theme.light} 50%, ${theme.secondary} 100%)`
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
@@ -788,11 +819,14 @@ export default function ProductionReadyVetGrooming() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 transition-colors duration-300 ${
-                darkMode
-                  ? 'bg-purple-800 text-purple-300'
-                  : 'bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 border border-purple-200'
-              }`}
+              className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 transition-colors duration-300"
+              style={{
+                backgroundImage: darkMode
+                  ? `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`
+                  : `linear-gradient(135deg, ${theme.light}, ${theme.secondary})`,
+                color: darkMode ? '#E0E7FF' : theme.primary,
+                border: darkMode ? '1px solid rgba(195, 197, 203, 0.3)' : '1px solid rgba(195, 197, 203, 0.7)'
+              }}
             >
               <Heart className="w-4 h-4 mr-2" />
               {config.industry === 'peluqueria' ? 'Historias de Belleza' : 'Historias de Éxito'}
@@ -802,7 +836,7 @@ export default function ProductionReadyVetGrooming() {
               darkMode ? 'text-white' : 'text-gray-900'
             }`}>
               Lo que dicen nuestros
-              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-clip-text text-transparent" style={{ backgroundImage: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})` }}>
                 {" "}Clientes Felices
               </span>
             </h2>
@@ -831,7 +865,7 @@ export default function ProductionReadyVetGrooming() {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="w-12 h-12 bg-gradient-to-br from-black to-cyan-600 rounded-full flex items-center justify-center text-white font-bold">
                       {testimonial.avatar}
                     </div>
                     <div>
@@ -877,18 +911,17 @@ export default function ProductionReadyVetGrooming() {
                   <div className="flex gap-2">
                     {testimonial.images.map((img, i) => (
                       <div key={i} className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        darkMode ? 'bg-purple-800' : 'bg-purple-100'
+                        darkMode ? 'bg-green-800' : 'bg-green-100'
                       }`}>
-                        <PawPrint className={`w-4 h-4 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                        <PawPrint className="w-4 h-4" style={{ color: darkMode ? theme.secondary : theme.primary }} />
                       </div>
                     ))}
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`transition-colors ${
-                      darkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-700'
-                    }`}
+                    className="transition-colors"
+                    style={{ color: darkMode ? theme.secondary : theme.primary }}
                   >
                     <Heart className="w-5 h-5" />
                   </motion.button>
@@ -902,8 +935,8 @@ export default function ProductionReadyVetGrooming() {
       {/* Contact Section */}
       <section id="contacto" className={`py-24 transition-colors duration-300 ${
         darkMode
-          ? 'bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900'
-          : 'bg-gradient-to-br from-purple-100 via-purple-200 to-blue-100'
+          ? 'bg-gradient-to-br from-black via-gray-800 to-cyan-900'
+          : 'bg-gradient-to-br from-gray-100 via-gray-200 to-cyan-100'
       }`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <motion.div
@@ -919,7 +952,7 @@ export default function ProductionReadyVetGrooming() {
               className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold mb-6 backdrop-blur-sm border transition-colors duration-300 ${
                 darkMode
                   ? 'bg-white/20 text-white border-white/30'
-                  : 'bg-purple-100 text-purple-700 border-purple-200'
+                  : 'bg-gray-100 text-gray-700 border-gray-200'
               }`}
             >
               <Calendar className="w-4 h-4 mr-2" />

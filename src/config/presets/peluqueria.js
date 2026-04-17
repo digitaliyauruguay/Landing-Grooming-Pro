@@ -30,12 +30,12 @@ export const peluqueriaPreset = {
 
   // ==================== COLORES & TEMA ====================
   theme: {
-    primary: "#ec4899", // Rosa/fucsia peluquería
-    primaryHover: "#db2777",
-    secondary: "#8b5cf6",
-    accent: "#f59e0b",
+    primary: "#000000", // Black - sophisticated and modern
+    primaryHover: "#1f2937",
+    secondary: "#10b981", // Green - fresh and natural
+    accent: "#374151", // Dark grey - professional
     dark: "#1f2937",
-    light: "#fdf2f8",
+    light: "#06b6d4", // Cyan - vibrant accent
   },
 
   // ==================== HERO SECTION ====================

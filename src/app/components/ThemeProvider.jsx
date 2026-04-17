@@ -10,7 +10,13 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     // Aplicar variables CSS del tema
     const root = document.documentElement;
-    
+
+    root.style.setProperty('--primary', config.theme.primary);
+    root.style.setProperty('--primary-foreground', config.theme.light);
+    root.style.setProperty('--secondary', config.theme.secondary);
+    root.style.setProperty('--secondary-foreground', config.theme.light);
+    root.style.setProperty('--accent', config.theme.accent);
+    root.style.setProperty('--accent-foreground', config.theme.dark);
     root.style.setProperty('--color-primary', config.theme.primary);
     root.style.setProperty('--color-primary-hover', config.theme.primaryHover);
     root.style.setProperty('--color-secondary', config.theme.secondary);
